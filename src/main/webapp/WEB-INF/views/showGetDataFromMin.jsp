@@ -21,7 +21,7 @@
         </div>
     </div>
    </div>
-        <div class="container pt-4">
+        <div class="container pt-4 mb-5">
             <h3 class="mb-3">ເລກທີເອກະສານ: ${docnumber}, ວັນທີເອກະສານ: ${doc_date} (${persons.size()} ລາຍການ)</h3>
             <table class="table table-hover">
                 <thead class="text-white bg-primary">
