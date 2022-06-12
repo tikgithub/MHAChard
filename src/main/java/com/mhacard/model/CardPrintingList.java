@@ -19,6 +19,8 @@ public class CardPrintingList {
     private String sex;
     private Date dob;
     private Date datePermanent;
+    private String photo;
+    
     public CardPrintingList() {
     }
     public CardPrintingList(long id, String issue_by, Date issue_date, String note, String account_number,
@@ -136,6 +138,12 @@ public class CardPrintingList {
     }
     public void setDatePermanent(Date datePermanent) {
         this.datePermanent = datePermanent;
+    }
+    public String getPhoto() {
+        return photo;
+    }
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     

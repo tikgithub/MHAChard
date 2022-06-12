@@ -172,6 +172,7 @@ public class DataFromMinController {
                     card.setIdEmployee(listPerson.get(i).getIdEmployee());
                     card.setSocial_card_number(listPerson.get(i).getSocial_card_number());
                     card.setAtm_number(listPerson.get(i).getAtmnumber());
+                    card.setPhoto(listPerson.get(i).getPhoto());
                     cardPrintingService.add(card);
                 }
                 session.setAttribute("newPrintOrder", docnumber);

@@ -24,8 +24,8 @@ public class CardPrintListServiceImpl {
     public long add(CardPrintingList card){
         String sql = 
         "insert into PrintingList " +
-        "(issue_by,issue_date,account_number, account_name,atm_number,social_card_number,idEmployee,lafname, lalname,enfname, enlname,sex, dob,datepermanent, note)" + 
-        " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        "(issue_by,issue_date,account_number, account_name,atm_number,social_card_number,idEmployee,lafname, lalname,enfname, enlname,sex, dob,datepermanent, note,photo)" + 
+        " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         KeyHolder key  = new GeneratedKeyHolder();
 
@@ -49,6 +49,7 @@ public class CardPrintListServiceImpl {
                 ps.setDate(13, new java.sql.Date(card.getDob().getTime()));
                 ps.setDate(14, new java.sql.Date(card.getDatePermanent().getTime()));
                 ps.setString(15, card.getNote());
+                ps.setString(16,card.getPhoto());
                 return ps;
             }
             
