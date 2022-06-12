@@ -1,6 +1,7 @@
 package com.mhacard.controller;
 
 import java.io.File;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import com.mhacard.model.CardPrintingList;
 import com.mhacard.model.PersonResponse;
 import com.mhacard.service.CardPrintListServiceImpl;
+import com.mhacard.service.DocumentIssueServiceImpl;
 import com.mhacard.service.DocumentServiceImpl;
 import com.mhacard.utils.DateTimeUtil;
 
@@ -27,6 +29,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 @Controller
 public class DataFromMinController {
@@ -36,6 +39,8 @@ public class DataFromMinController {
     @Autowired
     private CardPrintListServiceImpl cardPrintingService;
 
+    @Autowired
+    private DocumentIssueServiceImpl docIssuer;
     // Show get data from ministry by document number page
     @RequestMapping(method = RequestMethod.GET, value = "/getCardDataByDocNumber")
     public String index() {
@@ -47,12 +52,14 @@ public class DataFromMinController {
     @RequestMapping(method = RequestMethod.GET, path = "/send_request_api_data")
     public String loadData(@RequestParam(name = "docnumber") String docnumber, Model d) {
         try {
-
+        	
+        	
             // Provide available Simple Data
-            List<PersonResponse> personList = getSimpleData();
+            List<PersonResponse> personList = getSimpleData(docnumber);
 
             d.addAttribute("persons", personList);
             d.addAttribute("docnumber", docnumber);
+            
             if (personList.size() > 0) {
                 // Send Document date time to attribute
                 d.addAttribute("doc_date", DateTimeUtil.dateTimeZoneToDate(personList.get(0).getDoc_date()));
@@ -74,12 +81,17 @@ public class DataFromMinController {
         }
     }
 
-    public List<PersonResponse> getSimpleData() throws Exception {
+    public List<PersonResponse> getSimpleData(String docNo) throws Exception {
         // Pasrse XML Local
-        File xmlString = ResourceUtils.getFile("classpath:simple.xml");
+    	String xmlData = docIssuer.getDocumentData(docNo);
+    	
+        //File xmlString = ResourceUtils.getFile("classpath:simple.xml");
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newDefaultInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-        Document doc = docBuilder.parse(xmlString);
+        InputSource is = new InputSource(new StringReader(xmlData));
+        Document doc = docBuilder.parse(is);
+        
+        
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("Table");
         List<PersonResponse> personList = new ArrayList<>();
@@ -126,7 +138,7 @@ public class DataFromMinController {
     public String storeToLocalDB(@PathVariable(value = "docnumber") String docnumber, HttpSession session) {
         try {
 
-            List<PersonResponse> listPerson = getSimpleData();
+            List<PersonResponse> listPerson = getSimpleData(docnumber);
             if (listPerson.size() > 0) {
                 PersonResponse person = listPerson.get(0);
 
