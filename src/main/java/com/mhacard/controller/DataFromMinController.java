@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -41,6 +43,7 @@ public class DataFromMinController {
 
     @Autowired
     private DocumentIssueServiceImpl docIssuer;
+
     // Show get data from ministry by document number page
     @RequestMapping(method = RequestMethod.GET, value = "/getCardDataByDocNumber")
     public String index() {
@@ -52,14 +55,15 @@ public class DataFromMinController {
     @RequestMapping(method = RequestMethod.GET, path = "/send_request_api_data")
     public String loadData(@RequestParam(name = "docnumber") String docnumber, Model d) {
         try {
-        	
-        	
+
+            d.addAttribute("cannotSave", docService.isDocumentIssue(docnumber));
+
             // Provide available Simple Data
             List<PersonResponse> personList = getSimpleData(docnumber);
 
             d.addAttribute("persons", personList);
             d.addAttribute("docnumber", docnumber);
-            
+
             if (personList.size() > 0) {
                 // Send Document date time to attribute
                 d.addAttribute("doc_date", DateTimeUtil.dateTimeZoneToDate(personList.get(0).getDoc_date()));
@@ -83,15 +87,14 @@ public class DataFromMinController {
 
     public List<PersonResponse> getSimpleData(String docNo) throws Exception {
         // Pasrse XML Local
-    	String xmlData = docIssuer.getDocumentData(docNo);
-    	
-        //File xmlString = ResourceUtils.getFile("classpath:simple.xml");
+        String xmlData = docIssuer.getDocumentData(docNo);
+
+        // File xmlString = ResourceUtils.getFile("classpath:simple.xml");
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newDefaultInstance();
         DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xmlData));
         Document doc = docBuilder.parse(is);
-        
-        
+
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("Table");
         List<PersonResponse> personList = new ArrayList<>();
@@ -135,8 +138,34 @@ public class DataFromMinController {
 
     // Store Information to database local database
     @RequestMapping(method = RequestMethod.GET, value = "/storeCardPrintData/{docnumber}")
-    public String storeToLocalDB(@PathVariable(value = "docnumber") String docnumber, HttpSession session) {
+    public String storeToLocalDB(@PathVariable(value = "docnumber") String docnumber, Model d, HttpSession session,
+            HttpServletRequest request, RedirectAttributes flashMessage) {
         try {
+            if(docnumber.equals("")){
+                flashMessage.addFlashAttribute("flashError","ບໍ່ພົບເລກທີ່ເອກະສານ");
+                return "redirect:" + request.getHeader("Referer");
+            }
+
+            if(getSimpleData(docnumber).size()<0){
+                flashMessage.addFlashAttribute("flashError","ບໍ່ພົບລາຍການຈາກເລກທີ່ເອກະສານ");
+                return "redirect:" + request.getHeader("Referer");
+            }
+
+            if (docService.isDocumentIssue(docnumber)) {
+                flashMessage.addFlashAttribute("warning", "ເລກທີ່ເອກະສານຊໍ້າກັນ ກະລຸນາລອງໃໝ່");
+                // Provide available Simple Data
+                List<PersonResponse> personList = getSimpleData(docnumber);
+                d.addAttribute("cannotSave", docService.isDocumentIssue(docnumber));
+                d.addAttribute("persons", personList);
+                d.addAttribute("docnumber", docnumber);
+
+                if (personList.size() > 0) {
+                    // Send Document date time to attribute
+                    d.addAttribute("doc_date", DateTimeUtil.dateTimeZoneToDate(personList.get(0).getDoc_date()));
+                }
+
+                return "showGetDataFromMin";
+            }
 
             List<PersonResponse> listPerson = getSimpleData(docnumber);
             if (listPerson.size() > 0) {
@@ -173,6 +202,7 @@ public class DataFromMinController {
                     card.setSocial_card_number(listPerson.get(i).getSocial_card_number());
                     card.setAtm_number(listPerson.get(i).getAtmnumber());
                     card.setPhoto(listPerson.get(i).getPhoto());
+                    card.setSex(listPerson.get(i).getSex());
                     cardPrintingService.add(card);
                 }
                 session.setAttribute("newPrintOrder", docnumber);
@@ -183,7 +213,8 @@ public class DataFromMinController {
             return "redirect:/getCardDataByDocNumber";
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            flashMessage.addFlashAttribute("flashError", e.getMessage());
+            return "redirect:" + request.getHeader("Referer");
         }
     }
 
@@ -191,7 +222,7 @@ public class DataFromMinController {
     public String showCompletedPAddPage(HttpSession session) {
         try {
             System.out.println(session.getAttribute("newPrintOrder"));
-            
+
             if (session.getAttribute("newPrintOrder") != null) {
                 session.removeAttribute("newPrintOrder");
                 return "showCompletedAddNewPrint";

@@ -2,6 +2,7 @@ package com.mhacard.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class DocumentServiceImpl {
     @Qualifier("localJDBCTemplate")
     JdbcTemplate localDBSource;
 
-    public long add(Document doc) {
+    public long add(Document doc) throws Exception {
         String sql = "insert into document(doc_number,doc_date,print_total,add_date,add_by,print_status) values (?,?,?,getdate(),?,?)";
         KeyHolder key = new GeneratedKeyHolder();
 
@@ -42,4 +44,20 @@ public class DocumentServiceImpl {
 
         return key.getKey().longValue();
     }
+
+    
+	public boolean isDocumentIssue(String docNo) throws Exception{
+		String sql = "select doc_number from Document where doc_number = ?";
+        PreparedStatement pre = localDBSource.getDataSource().getConnection().prepareStatement(sql);
+        pre.setString(1, docNo);
+        ResultSet rs = pre.executeQuery();
+
+        boolean isExist = false;
+        if(rs.next()){
+            isExist = true;
+        }
+
+        return isExist;
+
+	}
 }
