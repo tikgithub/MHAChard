@@ -20,29 +20,28 @@ public class CardPrintingList {
     private Date dob;
     private Date datePermanent;
     private String photo;
+    private long doc_id;
+    private String print_status;
     
     public CardPrintingList() {
     }
-    public CardPrintingList(long id, String issue_by, Date issue_date, String note, String account_number,
-            String account_name, String atm_number, String social_card_number, String idEmployee, String laFName,
-            String laLName, String enFName, String enLname, String sex, Date dob, Date datePermanent) {
-        this.id = id;
-        this.issue_by = issue_by;
-        this.issue_date = issue_date;
-        this.note = note;
-        this.account_number = account_number;
-        this.account_name = account_name;
-        this.atm_number = atm_number;
-        this.social_card_number = social_card_number;
-        this.idEmployee = idEmployee;
-        this.laFName = laFName;
-        this.laLName = laLName;
-        this.enFName = enFName;
-        this.enLname = enLname;
-        this.sex = sex;
-        this.dob = dob;
-        this.datePermanent = datePermanent;
+    
+    public String getPrint_status() {
+        return print_status;
     }
+
+    public void setPrint_status(String print_status) {
+        this.print_status = print_status;
+    }
+
+    public long getDoc_id() {
+        return doc_id;
+    }
+
+    public void setDoc_id(long doc_id) {
+        this.doc_id = doc_id;
+    }
+
     public long getId() {
         return id;
     }

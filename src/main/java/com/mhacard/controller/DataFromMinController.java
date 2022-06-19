@@ -1,31 +1,28 @@
 package com.mhacard.controller;
 
-import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.Doc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import com.mhacard.model.CardPrintingList;
 import com.mhacard.model.PersonResponse;
+import com.mhacard.service.CardGeneratedServiceImpl;
 import com.mhacard.service.CardPrintListServiceImpl;
 import com.mhacard.service.DocumentIssueServiceImpl;
 import com.mhacard.service.DocumentServiceImpl;
 import com.mhacard.utils.DateTimeUtil;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,6 +40,10 @@ public class DataFromMinController {
 
     @Autowired
     private DocumentIssueServiceImpl docIssuer;
+
+    @Autowired
+    private CardGeneratedServiceImpl cardGeneratedServiceImpl;
+
 
     // Show get data from ministry by document number page
     @RequestMapping(method = RequestMethod.GET, value = "/getCardDataByDocNumber")
@@ -132,8 +133,17 @@ public class DataFromMinController {
 
     // Show list of new card to print after get from ministry api
     @RequestMapping(method = RequestMethod.GET, value = "/newListData")
-    public String showNewListDataPage() {
-        return "showNewListDataPage";
+    public String showNewListDataPage(HttpServletRequest request, Model data) {
+        try {
+            List<com.mhacard.model.Document> docs = docService.getPrintingListFromLocalDB();
+            data.addAttribute("docs", docs);
+            
+            return "showNewListDataPage";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:" + request.getHeader("Referer");
+        }
+       
     }
 
     // Store Information to database local database
@@ -184,7 +194,6 @@ public class DataFromMinController {
                 // Add item that need to print
                 for (int i = 0; i < listPerson.size(); i++) {
                     CardPrintingList card = new CardPrintingList();
-                    System.out.println(listPerson.get(i).getIssue_date());
                     card.setIssue_by(listPerson.get(i).getIssue_by());
                     card.setIssue_date(DateTimeUtil
                             .toYYYYMMdd(DateTimeUtil.dateTimeZoneToDate(listPerson.get(i).getIssue_date())));
@@ -203,6 +212,7 @@ public class DataFromMinController {
                     card.setAtm_number(listPerson.get(i).getAtmnumber());
                     card.setPhoto(listPerson.get(i).getPhoto());
                     card.setSex(listPerson.get(i).getSex());
+                    card.setDoc_id(lastid);
                     cardPrintingService.add(card);
                 }
                 session.setAttribute("newPrintOrder", docnumber);
@@ -218,7 +228,7 @@ public class DataFromMinController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/storeCardPrintCompleted")
+    @RequestMapping(method = RequestMethod.GET, value = "/storeCardPrintCompleted/{docnumber}")
     public String showCompletedPAddPage(HttpSession session) {
         try {
             System.out.println(session.getAttribute("newPrintOrder"));
@@ -235,6 +245,18 @@ public class DataFromMinController {
             return "redirect:/getCardDataByDocNumber";
         }
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/printing_list")
+    public String showPrintingListPage(HttpServletRequest request, Model model){
+        try {
+            
+            return "showPrintingList";
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+            return "redirect:" + request.getHeader("Referer");
+        }
     }
 
 }

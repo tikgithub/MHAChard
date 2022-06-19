@@ -5,13 +5,15 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.mhacard.model.Document;
+
 @Service
 public class DocumentIssueServiceImpl {
-
 
 	@Value("${Get_DOCUMENT_ISSUE_URL}")
 	private String GET_DOCUMENT_ISSUE_URL;
@@ -68,5 +70,7 @@ public class DocumentIssueServiceImpl {
 
 		return response.toString();
 	}
+
+	
 
 }

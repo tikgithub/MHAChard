@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mhacard.model.Document;
 
@@ -59,5 +61,26 @@ public class DocumentServiceImpl {
 
         return isExist;
 
+	}
+
+    public List<Document> getPrintingListFromLocalDB() throws Exception {
+		String sql = "select * from document";
+        PreparedStatement ps = localDBSource.getDataSource().getConnection().prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        List<Document> listDocs = new ArrayList<>();
+        Document doc = null;
+        while(rs.next()){
+            doc = new Document();
+            doc.setId(rs.getInt("id"));
+            doc.setDocNumber(rs.getString("doc_number"));
+            doc.setDocDate(rs.getDate("doc_date"));
+            doc.setPrintTotal(rs.getInt("print_total"));
+            doc.setAddDate(rs.getDate("add_date"));
+            doc.setAddBy(rs.getString("add_by"));
+            doc.setPrintStatus(rs.getString("print_status"));
+            listDocs.add(doc);
+        }
+
+        return listDocs;
 	}
 }

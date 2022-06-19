@@ -21,21 +21,7 @@
                 </tr>
               </thead>
               <tbody>
-                <c:forEach var="doc" items="${docs}" varStatus="loop">
-                  <tr class="align-middle">
-                    <td>${(loop.index) + 1}</td>
-                    <td>${doc.docNumber}</td>
-                    <td><fmt:formatDate pattern="dd-MM-yyyy" value="${doc.docDate}" /></td>
-                    <td><fmt:formatDate pattern="dd-MM-yyyy" value="${doc.addDate}"/></td>
-                    <td>${doc.addBy}</td>
-                    <td>
-                      <span class="badge bg-warning text-dark">${doc.printStatus}</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn btn-warning"><i class="fas fa-arrow-alt-circle-right"></i></a>
-                    </td>
-                  </tr>
-                </c:forEach>
+                
               </tbody>
             </table>
           </div>
