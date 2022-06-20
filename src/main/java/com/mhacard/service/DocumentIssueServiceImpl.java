@@ -54,7 +54,6 @@ public class DocumentIssueServiceImpl {
 		writer.close();
 
 		String responseStatus = con.getResponseMessage();
-		System.out.println(responseStatus);
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
 
