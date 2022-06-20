@@ -10,7 +10,8 @@
           <div class="container-fluid">
           <div class="row">
           	<div class="col-md-12 mb-3">
-          		<a href="${pageContext.request.contextPath}/verify_print_data/${doc_id}" class="btn btn-success btn-lg">Verify Data</a>
+          		<a href="${pageContext.request.contextPath}/verify_print_data/${doc_id}" class="btn btn-success btn-lg me-3">Verify Data (1)</a>
+          		<a href="${pageContext.request.contextPath}/verify_print_data/${doc_id}" class="btn btn-warning btn-lg">Set Completed(2)</a>
           	</div>
           </div>
             <table class="table table-hover bg-white table-border">
@@ -29,7 +30,9 @@
               </thead>
               <tbody>
                 <c:forEach var="print" items="${prints}" varStatus="loop">
-                	<tr class="align-middle">
+                	<tr class="align-middle 
+                	<c:if test="${print.print_status=='GENERATED_FIALED' }">bg-warning</c:if>
+                	<c:if test="${print.print_status=='GENERATED_OK' }">bg-white</c:if>">
                 		<td>${(loop.index)+1}</td>
                 		<th><img src="${print.photo}" style="width: auto; height: 100px;"></th>
                 		<td><fmt:formatDate pattern="dd-MM-yyyy" value="${print.issue_date }" /></td>
@@ -39,8 +42,11 @@
                 		<td>${print.atm_number }</td>
                 		<td>${print.note}</td>
                 		<td>
-                			<c:if test="${print.print_status == NULL}">
-                				Not Completed
+                			<c:if test="${print.print_status == 'GENERATED_FIALED'}">
+                				<span class="badge bg-danger blink_me shadow">${print.print_status }</span>
+                			</c:if>
+                			<c:if test="${print.print_status=='GENERATED_OK' }">
+                			<span class="badge bg-success">${print.print_status}</span>
                 			</c:if>
                 		</td>
                 	</tr>

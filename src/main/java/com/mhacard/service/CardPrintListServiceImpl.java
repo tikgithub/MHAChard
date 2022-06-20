@@ -95,6 +95,7 @@ public class CardPrintListServiceImpl {
     		print.setDatePermanent(rs.getDate("datePermanent"));
     		print.setDoc_id(rs.getLong("doc_id"));
     		print.setPrint_status(rs.getString("card_status"));
+    		print.setId(rs.getLong("id"));
     		
     		listPrints.add(print);
     		
@@ -105,6 +106,25 @@ public class CardPrintListServiceImpl {
     	
     	return listPrints;
     	
+    }
+    
+    public void updatePrintingStatus(long id, String status) throws Exception{
+    	Connection con = null;
+    	PreparedStatement pre= null;
+    	try {
+    		String sql = "Update PrintingList set card_status = ? Where id=?";
+    		con = localJDBCTEmplate.getDataSource().getConnection();
+			pre = con.prepareStatement(sql);
+			pre.setString(1, status);
+			pre.setLong(2, id);
+			pre.execute();
+			
+    		con.close();
+			pre.close();
+		} catch (Exception e) {
+			con.close();
+			throw new Exception(e);
+		}
     }
     
 }

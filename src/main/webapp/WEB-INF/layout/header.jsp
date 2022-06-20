@@ -12,7 +12,15 @@
 	href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/toastr/toastr.min.css">
 <style>
+.blink_me {
+  animation: blinker 3s linear infinite;
+}
 
+@keyframes blinker {
+  50% {
+    opacity: 0.5;
+  }
+}
 </style>
 </head>
 <body style="font-family: NotoSan; background-color: #555566">

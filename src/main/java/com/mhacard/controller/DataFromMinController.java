@@ -279,12 +279,14 @@ public class DataFromMinController {
 				req.setGender(sex);
 				QueryForCardResponse res  = cardGeneratedServiceImpl.getCardGenerated(req);
 				if(res==null) {
+					cardPrintingService.updatePrintingStatus(prints.get(i).getId(), "GENERATED_FIALED");
 					System.out.println("this row is null");
 				}else {
 					System.out.println("Data Found");
+					cardPrintingService.updatePrintingStatus(prints.get(i).getId(), "GENERATED_OK");
 				}
 			}
-			return "showPrintingList";
+			return "redirect:/printing_list/" + doc_id;
 		} catch (Exception e) {
 			e.printStackTrace();
 			flashMessage.addFlashAttribute("flashError", e.getMessage());
