@@ -1,5 +1,6 @@
 package com.mhacard.service;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -24,7 +25,8 @@ public class CardGeneratedServiceImpl {
         " ON a.CIN = c.CIN INNER JOIN CUSTOMER_MASTER_WK d ON a.CIN = d.CIN " +
         " Where d.f_name =? and d.l_name=? and d.gender = ? and a.acc_no=? ";
 
-        PreparedStatement pre = cardGeneratedJDBC.getDataSource().getConnection().prepareStatement(sql);
+        Connection con = cardGeneratedJDBC.getDataSource().getConnection();
+		PreparedStatement pre = con.prepareStatement(sql);
         pre.setString(1, info.getF_name());
         pre.setString(2, info.getL_name());
         pre.setString(3, info.getGender());
@@ -40,6 +42,8 @@ public class CardGeneratedServiceImpl {
             cardData.setProduct_type(rs.getString("PRODUCT_TYPE"));
             cardData.setCard_status(rs.getString("CARD_STATUS"));
         }
+        con.close();
+        pre.close();
         return cardData;
     }
 }

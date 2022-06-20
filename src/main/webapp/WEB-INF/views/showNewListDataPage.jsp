@@ -32,7 +32,7 @@
                       <span class="badge bg-warning text-dark">${doc.printStatus}</span>
                     </td>
                     <td>
-                      <a href="#" class="btn btn-warning"><i class="fas fa-arrow-alt-circle-right"></i></a>
+                      <a href="${pageContext.request.contextPath}/printing_list/${doc.id}" class="btn btn-warning"><i class="fas fa-arrow-alt-circle-right"></i></a>
                     </td>
                   </tr>
                 </c:forEach>

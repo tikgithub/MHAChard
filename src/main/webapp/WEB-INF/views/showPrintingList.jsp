@@ -5,23 +5,46 @@
 
         <div class="main pt-3">
           <div style="padding-top: 100px;"></div>
-          <h1 class="text-center text-white">ລາຍການຂໍພິມບັດຈາກກະຊວງ</h1>
+          <h1 class="text-center text-white">ລາຍການຂໍພິມບັດຈາກກະຊວງເລກທີ: ${doc_number}</h1>
           <div class="pt-5"></div>
-          <div class="container">
+          <div class="container-fluid">
+          <div class="row">
+          	<div class="col-md-12 mb-3">
+          		<a href="${pageContext.request.contextPath}/verify_print_data/${doc_id}" class="btn btn-success btn-lg">Verify Data</a>
+          	</div>
+          </div>
             <table class="table table-hover bg-white table-border">
               <thead>
                 <tr class="">
                   <th>#</th>
-                  <th>ເລກທີເອກະສານ</th>
-                  <th>ວັນທີ່ເອກະສານ</th>
-                  <th>ວັນທີ່ເພີ່ມເຂົ້າລະບົບ</th>
-                  <th>ການພິມ</th>
+                  <th>Photo</th>
+                  <th>ອອກວັນທີ</th>
+                  <th>ອອກໂດຍ</th>
+                  <th>ຊີ່ບັນຊີ</th>
+                  <th>ເລກບັນຊີ</th>
+                  <th>ເລກບັດ</th>
+                  <th>ຈາກ</th>
                   <th>ສະຖານະການພິມ</th>
-                  <th><i class="fas fa-cog"></i></th>
                 </tr>
               </thead>
               <tbody>
-                
+                <c:forEach var="print" items="${prints}" varStatus="loop">
+                	<tr class="align-middle">
+                		<td>${(loop.index)+1}</td>
+                		<th><img src="${print.photo}" style="width: auto; height: 100px;"></th>
+                		<td><fmt:formatDate pattern="dd-MM-yyyy" value="${print.issue_date }" /></td>
+                		<td>${print.issue_by }</td>
+                		<td>${print.account_name }</td>
+                		<td>${print.account_number}</td>
+                		<td>${print.atm_number }</td>
+                		<td>${print.note}</td>
+                		<td>
+                			<c:if test="${print.print_status == NULL}">
+                				Not Completed
+                			</c:if>
+                		</td>
+                	</tr>
+                </c:forEach>
               </tbody>
             </table>
           </div>
@@ -30,3 +53,4 @@
 
 
         <%@include file="../layout/footer.jsp" %>
+        <%@include file="../layout/toastrMessage.jsp" %>

@@ -2,8 +2,11 @@ package com.mhacard.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mhacard.model.CardPrintingList;
 
@@ -59,5 +62,49 @@ public class CardPrintListServiceImpl {
             return key.getKey().longValue();
     }
 
+    public List<CardPrintingList> getPrintingListByDocId(long doc_id) throws Exception{
+    	String sql = "select * from PrintingList where doc_id=?";
+    	Connection con = localJDBCTEmplate.getDataSource().getConnection();
+		PreparedStatement pre = con.prepareStatement(sql);
+    	pre.setLong(1, doc_id);
+    	
+    	List<CardPrintingList> listPrints = new ArrayList<CardPrintingList>();
+    	
+    	ResultSet rs = pre.executeQuery();
+    	
+    	CardPrintingList print = null;
+    	
+    	while(rs.next()) {
+    		print = new CardPrintingList();
+    		
+    		print.setIssue_by(rs.getString("issue_by"));
+    		print.setIssue_date(rs.getDate("issue_date"));
+    		print.setNote(rs.getString("note"));
+    		print.setAccount_number(rs.getString("account_number"));
+    		print.setAccount_name(rs.getString("account_name"));
+    		print.setAtm_number(rs.getString("atm_number"));
+    		print.setSocial_card_number(rs.getString("social_card_number"));
+    		print.setIdEmployee(rs.getString("idEmployee"));
+    		print.setLaFName(rs.getString("LaFName"));
+    		print.setLaLName(rs.getString("LaLName"));
+    		print.setEnFName(rs.getString("EnFName"));
+    		print.setEnLname(rs.getString("EnLName"));
+    		print.setSex(rs.getString("sex"));
+    		print.setDob(rs.getDate("DOB"));
+    		print.setPhoto(rs.getString("photo"));
+    		print.setDatePermanent(rs.getDate("datePermanent"));
+    		print.setDoc_id(rs.getLong("doc_id"));
+    		print.setPrint_status(rs.getString("card_status"));
+    		
+    		listPrints.add(print);
+    		
+    	}
+    	pre.close();
+    	con.close();
+    
+    	
+    	return listPrints;
+    	
+    }
     
 }

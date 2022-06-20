@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import com.mhacard.model.CardPrintingList;
 import com.mhacard.model.PersonResponse;
+import com.mhacard.model.QueryForCard;
+import com.mhacard.model.QueryForCardResponse;
 import com.mhacard.service.CardGeneratedServiceImpl;
 import com.mhacard.service.CardPrintListServiceImpl;
 import com.mhacard.service.DocumentIssueServiceImpl;
@@ -246,17 +248,49 @@ public class DataFromMinController {
 
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/printing_list/{document}")
+	@RequestMapping(method = RequestMethod.GET, value = "/printing_list/{doc_id}")
 	public String showPrintingListPage(HttpServletRequest request, Model model,
-			@PathVariable("document") String document) {
+			@PathVariable("doc_id") long doc_id) {
 		try {
-			
+			model.addAttribute("doc_number", docService.getById(doc_id).getDocNumber());
+			model.addAttribute("doc_id", doc_id);
+			model.addAttribute("prints", cardPrintingService.getPrintingListByDocId(doc_id));
+			System.out.println(cardPrintingService.getPrintingListByDocId(doc_id).size());
 			return "showPrintingList";
 		} catch (Exception e) {
 			e.printStackTrace();
 
 			return "redirect:" + request.getHeader("Referer");
 		}
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/verify_print_data/{doc_id}")
+	public String verifyPrintData(HttpServletRequest request,@PathVariable("doc_id")long doc_id, RedirectAttributes flashMessage) {
+		
+		try {
+			List<CardPrintingList> prints = cardPrintingService.getPrintingListByDocId(doc_id);
+			for(int i = 0; i<prints.size();i++) {
+				
+				QueryForCard req = new QueryForCard();
+				req.setAcc_no(prints.get(i).getAccount_number());
+				req.setF_name(prints.get(i).getEnFName());
+				req.setL_name(prints.get(i).getEnLname());
+				String sex = prints.get(i).getSex()=="ຊາຍ"? "Male":"Female";
+				req.setGender(sex);
+				QueryForCardResponse res  = cardGeneratedServiceImpl.getCardGenerated(req);
+				if(res==null) {
+					System.out.println("this row is null");
+				}else {
+					System.out.println("Data Found");
+				}
+			}
+			return "showPrintingList";
+		} catch (Exception e) {
+			e.printStackTrace();
+			flashMessage.addFlashAttribute("flashError", e.getMessage());
+			return "redirect:" + request.getHeader("Referer");
+		}
+		
 	}
 
 }

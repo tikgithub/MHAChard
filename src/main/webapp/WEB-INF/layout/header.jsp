@@ -20,7 +20,7 @@
 		<div class="container-fluid">
 			<a class="navbar-brand fw-bold"
 				href="${pageContext.request.contextPath}/"> <img
-				src="image/main_logo.jpg" alt="" width="40" height="40"
+				src="${pageContext.request.contextPath}/image/main_logo.jpg" alt="" width="40" height="40"
 				class="d-inline-block rounded-circle"> LVB MHACard
 			</a>
 			<span class="text-white">
