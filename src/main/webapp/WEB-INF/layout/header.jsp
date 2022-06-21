@@ -11,6 +11,7 @@
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/toastr/toastr.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
 <style>
 .blink_me {
   animation: blinker 3s linear infinite;
@@ -23,7 +24,7 @@
 }
 </style>
 </head>
-<body style="font-family: NotoSan; background-color: #555566">
+<body style="font-family: NotoSan; background-color: #f5f7fa">
 	<nav class="navbar navbar-dark bg-primary fixed-top">
 		<div class="container-fluid">
 			<a class="navbar-brand fw-bold"

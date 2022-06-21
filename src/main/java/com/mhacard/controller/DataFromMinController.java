@@ -232,8 +232,7 @@ public class DataFromMinController {
 	@RequestMapping(method = RequestMethod.GET, value = "/storeCardPrintCompleted")
 	public String showCompletedPAddPage(HttpSession session) {
 		try {
-			System.out.println(session.getAttribute("newPrintOrder"));
-
+			
 			if (session.getAttribute("newPrintOrder") != null) {
 				session.removeAttribute("newPrintOrder");
 				return "showCompletedAddNewPrint";
@@ -255,7 +254,7 @@ public class DataFromMinController {
 			model.addAttribute("doc_number", docService.getById(doc_id).getDocNumber());
 			model.addAttribute("doc_id", doc_id);
 			model.addAttribute("prints", cardPrintingService.getPrintingListByDocId(doc_id));
-			System.out.println(cardPrintingService.getPrintingListByDocId(doc_id).size());
+
 			return "showPrintingList";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -280,13 +279,29 @@ public class DataFromMinController {
 				QueryForCardResponse res  = cardGeneratedServiceImpl.getCardGenerated(req);
 				if(res==null) {
 					cardPrintingService.updatePrintingStatus(prints.get(i).getId(), "GENERATED_FIALED");
-					System.out.println("this row is null");
+					
 				}else {
-					System.out.println("Data Found");
+					
 					cardPrintingService.updatePrintingStatus(prints.get(i).getId(), "GENERATED_OK");
 				}
 			}
 			return "redirect:/printing_list/" + doc_id;
+		} catch (Exception e) {
+			e.printStackTrace();
+			flashMessage.addFlashAttribute("flashError", e.getMessage());
+			return "redirect:" + request.getHeader("Referer");
+		}
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/showEditPage/{id}")
+	public String showEditPage(RedirectAttributes flashMessage, 
+			HttpServletRequest request,
+			@PathVariable("id")long id,
+			Model model) {
+		
+		try {
+			model.addAttribute("person", cardPrintingService.getDataById(id));
+			return "showEditPage";
 		} catch (Exception e) {
 			e.printStackTrace();
 			flashMessage.addFlashAttribute("flashError", e.getMessage());

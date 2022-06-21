@@ -3,12 +3,11 @@
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <%@include file="../layout/header.jsp" %>
 
-        <div class="main pt-3">
-          <div style="padding-top: 100px;"></div>
-          <h1 class="text-center text-white">ລາຍການຂໍພິມບັດຈາກກະຊວງ</h1>
-          <div class="pt-5"></div>
+        <div class="main">
+          <div style="padding-top: 80px;"></div>
+          <h1 class="text-center">ລາຍການຂໍພິມບັດຈາກກະຊວງ</h1>
           <div class="container">
-            <table class="table table-hover bg-white table-border">
+            <table class="table table-hover bg-white table-border" id="person">
               <thead>
                 <tr class="">
                   <th>#</th>

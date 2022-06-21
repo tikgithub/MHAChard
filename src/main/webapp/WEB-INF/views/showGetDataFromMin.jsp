@@ -2,21 +2,20 @@
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
         <%@include file="../layout/header.jsp" %>
 
-            <div class="main text-white">
-                <div style="padding-top: 100px;"></div>
-                <h2 class="text-center pt-3">
+            <div class="main">
+                <div style="padding-top: 80px;"></div>
+                <h2 class="text-center">
                     <u>ດຶງຂໍ້ມູນຈາກກະຊວງ</u>
                 </h2>
                 <div>
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-4 offset-md-4 text-center">
-                                <form action="${pageContext.request.contextPath}/send_request_api_data" method="get" autocomplete="off"
-                                    class="pt-3">
+                                <form class="" action="${pageContext.request.contextPath}/send_request_api_data" method="get" autocomplete="off">
                                     <input required type="text" name="docnumber" id="docnumber"
-                                        class="text-center form-control form-control-lg" placeholder="ເລກທີ່ເອກະສານ"
+                                        class="text-center form-control" placeholder="ເລກທີ່ເອກະສານ"
                                         value="${docnumber}">
-                                    <button type="submit" class="mt-3 btn btn-lg btn-primary shadow">
+                                    <button type="submit" class="mt-2 btn btn-primary">
                                         <i class="me-2 fas fa-server"></i>ຕົກລົງ</button>
                                 </form>
                             </div>
@@ -28,7 +27,7 @@
                     </h3>
                     <c:if test="${cannotSave==true}"><span
                             class="text-warning fw-bold fs-4 mb-3">ເລກທີນີ້ແມ່ນຖືກບັນທຶກລົງໃນຖານຂໍ້ມູນແລ້ວ**</span></c:if>
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="person">
                         <thead class="text-white bg-primary">
                             <tr>
                                 <td>#</td>
@@ -41,7 +40,7 @@
                                 <td>ເລກບັນຊີ</td>
                             </tr>
                         </thead>
-                        <tbody class="text-white">
+                        <tbody>
                             <c:forEach var="person" items="${persons}" varStatus="loop">
                                 <tr class="align-middle" style="cursor: pointer;">
                                     <td>${(loop.index) + 1}</td>
@@ -72,7 +71,7 @@
                     <c:if test="${persons.size()!=0}">
                         <div class="text-center">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#confirmDialog" type="submit"
-                                class="btn shadow btn-success btn-lg">
+                                class="btn btn-success btn-lg">
                                 <i class="fas fa-save me-2"></i>ບັນທຶກເປັນລາຍການພິມບັດ</button>
                         </div>
                     </c:if>

@@ -127,4 +127,47 @@ public class CardPrintListServiceImpl {
 		}
     }
     
+    public CardPrintingList getDataById(long id) throws Exception{
+    	Connection con = null;
+    	PreparedStatement pre = null;
+    	try {
+    		con = localJDBCTEmplate.getDataSource().getConnection();
+    		
+			String sql = "select * from printinglist where id=?";
+			pre = con.prepareStatement(sql);
+			pre.setLong(1, id);
+			CardPrintingList data = null;
+			ResultSet rs = pre.executeQuery();
+			while(rs.next()) {
+				data = new CardPrintingList();
+				data.setIssue_by(rs.getString("issue_by"));
+				data.setIssue_date(rs.getDate("issue_date"));
+				data.setNote(rs.getString("note"));
+				data.setAccount_number(rs.getString("account_number"));
+				data.setAccount_name(rs.getString("account_name"));
+				data.setAtm_number(rs.getString("atm_number"));
+				data.setSocial_card_number(rs.getString("social_card_number"));
+				data.setIdEmployee(rs.getString("idEmployee"));
+				data.setLaFName(rs.getString("LaFName"));
+				data.setLaLName(rs.getString("LaLName"));
+	    		data.setEnFName(rs.getString("EnFName"));
+	    		data.setEnLname(rs.getString("EnLName"));
+	    		data.setSex(rs.getString("sex"));
+	    		data.setDob(rs.getDate("DOB"));
+	    		data.setPhoto(rs.getString("photo"));
+	    		data.setDatePermanent(rs.getDate("datePermanent"));
+	    		data.setDoc_id(rs.getLong("doc_id"));
+	    		data.setPrint_status(rs.getString("card_status"));
+	    		data.setId(rs.getLong("id"));
+			}
+    		con.close();
+    		pre.close();
+    		return data;
+		} catch (Exception e) {
+			con.close();
+			pre.close();
+			throw new Exception(e);
+		}
+    }
+    
 }

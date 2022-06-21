@@ -3,7 +3,11 @@
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/fontAwsome5.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/toastr/toastr.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
 <script>
+$(document).ready( function () {
+    $('#person').DataTable();
+} );
     toastr.options = {
         "closeButton": false,
         "debug": false,
