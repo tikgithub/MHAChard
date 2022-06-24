@@ -28,7 +28,13 @@
                     <td><fmt:formatDate pattern="dd-MM-yyyy" value="${doc.addDate}"/></td>
                     <td>${doc.addBy}</td>
                     <td>
-                      <span class="badge bg-warning text-dark">${doc.printStatus}</span>
+                    <c:if test="${doc.printStatus=='PENDING' }">
+                    	<span class="badge bg-warning text-dark">${doc.printStatus}</span>
+                    </c:if>
+                    <c:if test="${doc.printStatus=='COMPLETED' }">
+                    	<span class="badge bg-success">${doc.printStatus}</span>
+                    </c:if>
+                      
                     </td>
                     <td>
                       <a href="${pageContext.request.contextPath}/printing_list/${doc.id}" class="btn btn-warning"><i class="fas fa-arrow-alt-circle-right"></i></a>

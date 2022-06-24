@@ -65,7 +65,7 @@ public class DocumentServiceImpl {
 	}
 
 	public List<Document> getPrintingListFromLocalDB() throws Exception {
-		String sql = "select * from document";
+		String sql = "select * from document order by add_date DESC";
 		Connection con = localDBSource.getDataSource().getConnection();
 		PreparedStatement ps = con.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
@@ -107,5 +107,47 @@ public class DocumentServiceImpl {
 		ps.close();
 		con.close();
 		return doc;
+	}
+	
+	public void setDocStatus(long id, String status) throws Exception{
+		Connection con = null;
+		PreparedStatement pre = null;
+		try {
+			con = localDBSource.getDataSource().getConnection();
+			pre = con.prepareStatement("Update Document set print_status = ? where id=? ");
+			pre.setLong(2, id);
+			pre.setString(1, status);
+			pre.execute();
+			pre.close();
+			con.close();
+		} catch (Exception e) {
+			con.close();
+			pre.close();
+			throw new Exception(e);
+			// TODO: handle exception
+		}
+	}
+	
+	public void deleteDocument(long id) throws Exception {
+		Connection con = null;
+		PreparedStatement pre  = null;
+		try {
+			con = localDBSource.getDataSource().getConnection();
+			pre = con.prepareStatement("delete from Document where id = ? and print_status=='PENDING'");
+			pre.setLong(1, id);
+			if(pre.execute()) {
+				pre.clearParameters();
+				pre = con.prepareStatement("delete from PrintingList where doc_id=?");
+				pre.setLong(1, id);
+				pre.execute();
+			}
+			
+			pre.close();
+			con.close();
+		} catch (Exception e) {
+			pre.close();
+			con.close();
+			throw new Exception(e);
+		}
 	}
 }

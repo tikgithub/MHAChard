@@ -251,7 +251,10 @@ public class DataFromMinController {
 	public String showPrintingListPage(HttpServletRequest request, Model model,
 			@PathVariable("doc_id") long doc_id) {
 		try {
-			model.addAttribute("doc_number", docService.getById(doc_id).getDocNumber());
+			com.mhacard.model.Document doc = docService.getById(doc_id);
+			
+			model.addAttribute("doc_number", doc.getDocNumber());
+			model.addAttribute("printStatus",doc.getPrintStatus());
 			model.addAttribute("doc_id", doc_id);
 			model.addAttribute("prints", cardPrintingService.getPrintingListByDocId(doc_id));
 
@@ -278,11 +281,12 @@ public class DataFromMinController {
 				req.setGender(sex);
 				QueryForCardResponse res  = cardGeneratedServiceImpl.getCardGenerated(req);
 				if(res==null) {
-					cardPrintingService.updatePrintingStatus(prints.get(i).getId(), "GENERATED_FIALED");
+
+					cardPrintingService.updatePrintingStatus(prints.get(i).getId(),"GENERATED_FIALED","");
 					
 				}else {
 					
-					cardPrintingService.updatePrintingStatus(prints.get(i).getId(), "GENERATED_OK");
+					cardPrintingService.updatePrintingStatus(prints.get(i).getId(),"GENERATED_OK",res.getCard_no());
 				}
 			}
 			return "redirect:/printing_list/" + doc_id;
@@ -308,6 +312,31 @@ public class DataFromMinController {
 			return "redirect:" + request.getHeader("Referer");
 		}
 		
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value = "/updateDocstatus/{id}")
+	public String updateDocStatus(RedirectAttributes flashMessage,HttpServletRequest request, @PathVariable("id")long id) {
+		try {
+			docService.setDocStatus(id, "COMPLETED");
+			return "redirect:/newListData";
+		} catch (Exception e) {
+			e.printStackTrace();
+			flashMessage.addFlashAttribute("flashError", e.getMessage());
+			return "redirect:" + request.getHeader("Referer");
+		}
+	}
+	
+	@RequestMapping(method=RequestMethod.GET,value="/deleteDocument/{id}")
+	public String deleteDocument(@PathVariable("id")long id, RedirectAttributes flashMessage, HttpServletRequest request) {
+		try {
+			docService.deleteDocument(id);
+			
+			return "redirect:/newListData";
+		} catch (Exception e) {
+			e.printStackTrace();
+			flashMessage.addFlashAttribute("flashError", e.getMessage());
+			return "redirect:" + request.getHeader("Referer");
+		}
 	}
 
 }

@@ -3,7 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@include file="../layout/header.jsp"%>
 
-<div class="main text-white">
+<div class="main">
     <div class="pt-5"></div>
     <h1 class="pt-5 text-center" style="padding-top: 50px;">ດຳເນີນການສຳເລັດ</h1>
     <div class="text-center">

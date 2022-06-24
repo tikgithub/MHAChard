@@ -108,17 +108,20 @@ public class CardPrintListServiceImpl {
     	
     }
     
-    public void updatePrintingStatus(long id, String status) throws Exception{
+    public void updatePrintingStatus(long id, String status, String cardNo) throws Exception{
     	Connection con = null;
+    	System.out.println("show data from card no :"+cardNo);
+    	System.out.println("show data from status :"+status);
+    	System.out.println("show data from id :"+id);
     	PreparedStatement pre= null;
     	try {
-    		String sql = "Update PrintingList set card_status = ? Where id=?";
+    		String sql = "Update PrintingList set card_status = ?, atm_number=? Where id=?";
     		con = localJDBCTEmplate.getDataSource().getConnection();
 			pre = con.prepareStatement(sql);
 			pre.setString(1, status);
-			pre.setLong(2, id);
+			pre.setString(2, cardNo);
+			pre.setLong(3, id);
 			pre.execute();
-			
     		con.close();
 			pre.close();
 		} catch (Exception e) {
@@ -166,6 +169,50 @@ public class CardPrintListServiceImpl {
 		} catch (Exception e) {
 			con.close();
 			pre.close();
+			throw new Exception(e);
+		}
+    }
+    
+    public List<CardPrintingList> getDataByDocumentNumber(String docNumber) throws Exception{
+    	Connection con = null;
+    	PreparedStatement ps = null;
+    	try {
+    		String sql ="select "
+    				+ "p.id as card_id,"
+    				+ "d.id as doc_id,"
+    				+ "d.doc_number,"
+    				+ "p.photo,"
+    				+ "p.account_name,"
+    				+ "p.account_number,"
+    				+ "p.atm_number,"
+    				+ "p.print_status "
+    				+ "from Document d inner join PrintingList p on d.id = p.doc_id "
+    				+ "Where d.doc_number =?;";
+    		
+			con = localJDBCTEmplate.getDataSource().getConnection();
+			ps = con.prepareStatement(sql);
+			ps.setString(1, docNumber);
+			ResultSet rs = ps.executeQuery();
+			
+			List<CardPrintingList> listCard = new ArrayList<CardPrintingList>();
+			CardPrintingList cardP = null;
+			while(rs.next()) {
+				cardP = new CardPrintingList();
+				cardP.setId(rs.getLong("card_id"));
+				cardP.setPhoto(rs.getString("photo"));
+				cardP.setAccount_name(rs.getString("account_name"));
+				cardP.setAccount_number(rs.getString("account_number"));
+				cardP.setAtm_number(rs.getString("atm_number"));
+				cardP.setPrint_status(rs.getString("print_status"));
+				listCard.add(cardP);
+			}
+			ps.close();
+			con.close();
+			return listCard;
+    		
+		} catch (Exception e) {
+			con.close();
+			ps.close();
 			throw new Exception(e);
 		}
     }

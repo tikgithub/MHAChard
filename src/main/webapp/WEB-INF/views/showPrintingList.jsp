@@ -9,15 +9,22 @@
 	<h3 class="text-center">ລາຍການຂໍພິມບັດຈາກກະຊວງເລກທີ:
 		${doc_number}</h3>
 	<div class="container-fluid">
+	<div class="pt-2"></div>
 		<div class="row">
+		<c:if test="${printStatus =='PENDING'}">
 			<div class="col-md-12 text-center mb-3">
 				<a
 					href="${pageContext.request.contextPath}/verify_print_data/${doc_id}"
 					class="btn btn-success me-3"><i class="fas fa-sync me-2"></i>ກວດສອບຂໍ້ມູນ</a> 
 			   <a
-					href="${pageContext.request.contextPath}/verify_print_data/${doc_id}"
-					class="btn btn-warning"><i class="fas fa-check-double me-2"></i>ສຳເລັດການອອກບັດ</a>
+					href="${pageContext.request.contextPath}/updateDocstatus/${doc_id}"
+					class="btn btn-warning me-3"><i class="fas fa-check-double me-2"></i>ສຳເລັດການອອກເລກບັດ</a>
+				<a onclick="return confirm('Are you sure to delete this item ? ')"
+					href="${pageContext.request.contextPath}/deleteDocument/${doc_id}"
+					class="btn btn-danger text-white"><i class="fas fa-trash me-2"></i>ຍົກເລີກ</a>
 			</div>
+		</c:if>
+			
 		</div>
 		<table class="table table-hover bg-white table-border" id="person">
 			<thead>

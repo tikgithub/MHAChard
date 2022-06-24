@@ -6,7 +6,9 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
 <script>
 $(document).ready( function () {
-    $('#person').DataTable();
+    $('#person').DataTable({
+    	"pageLength": 50
+    });
 } );
     toastr.options = {
         "closeButton": false,
