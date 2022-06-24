@@ -12,4 +12,8 @@
             toastr.warning("${warning}")
         </script>
     </c:if>
- 
+ <c:if test="${success!=null}">
+        <script>
+            toastr.success("${success}")
+        </script>
+    </c:if>

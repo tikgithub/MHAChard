@@ -18,7 +18,7 @@ public class LoginController {
 	@Autowired
 	private LoginServiceImpl loginService;
 	
-	@RequestMapping(method=RequestMethod.GET, value="/login")
+	@RequestMapping(method=RequestMethod.GET, value={"/login","/"})
 	public String loginPage(RedirectAttributes flash,HttpServletRequest req) {
 		//System.out.println(req.getAttribute("flashError"));
 		//flash.addFlashAttribute("message", req.getAttribute("flashError"));

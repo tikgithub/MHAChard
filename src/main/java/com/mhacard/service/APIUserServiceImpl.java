@@ -24,7 +24,7 @@ public class APIUserServiceImpl {
     	PreparedStatement pre = null;
     	try {
 			con = sqlServer.getDataSource().getConnection();
-    		pre = con.prepareStatement("insert into APIUser (email, password) value (?, HASHBYTES('SHA2_512',?))");
+    		pre = con.prepareStatement("insert into APIUser (email, password) values (?, ?)");
     		pre.setString(1, user.getEmail());
     		pre.setString(2, user.getPassword());
     		pre.execute();
@@ -42,7 +42,7 @@ public class APIUserServiceImpl {
     	PreparedStatement pre = null;
     	try {
 			con = sqlServer.getDataSource().getConnection();
-    		pre = con.prepareStatement("Update APIUser set password=HASHBYTES('SHA2_512',?) where email=?");
+    		pre = con.prepareStatement("Update APIUser set password=? where email=?");
     		pre.setString(2, user.getEmail());
     		pre.setString(1, user.getPassword());
     		pre.execute();
@@ -90,6 +90,31 @@ public class APIUserServiceImpl {
     		con.close();
     		return listUser;
     		
+		} catch (Exception e) {
+			pre.close();
+			con.close();
+			throw new Exception(e);
+		}
+    }
+    
+    public APIUser getByEmail(String email) throws Exception{
+    	Connection con = null;
+    	PreparedStatement pre = null;
+    	try {
+			con = sqlServer.getDataSource().getConnection();
+			pre = con.prepareStatement("select email from APIUser where email=?");
+			pre.setString(1, email);
+			ResultSet rs = pre.executeQuery();
+			APIUser user = null;
+			while(rs.next()) {
+				user = new APIUser();
+				user.setEmail(rs.getString("email"));
+				user.setPassword(null);
+			}
+			pre.close();
+			con.close();
+			return user;
+			
 		} catch (Exception e) {
 			pre.close();
 			con.close();

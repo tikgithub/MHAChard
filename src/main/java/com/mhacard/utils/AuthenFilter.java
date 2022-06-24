@@ -29,7 +29,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 	"/verify_print_data/*",
 	"/showEditPage/*",
 	"/updateDocstatus/*",
-	"/deleteDocument/*"
+	"/deleteDocument/*",
+	"/APIUser/*"
 })
 public class AuthenFilter implements Filter{
 	
